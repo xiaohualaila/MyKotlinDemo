@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">MyKotlinDemo</string>
+    <string name="jump">跳过</string>
+    <string name="rv_with_footer_empty">没有数据啦</string>
+    <string name="rv_with_footer_pull_load_more">上拉或点击加载更多</string>
+    <string name="rv_with_footer_loading">加载中…</string>
+    <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
+    <string name="scale_up_show_behavior">com.nanchen.aiyagirl.widget.behavior.ScaleUpShowBehavior</string>
+</resources>
