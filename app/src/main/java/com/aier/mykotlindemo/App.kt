@@ -15,6 +15,7 @@ class App:Application() {
 
     override fun onCreate() {
         super.onCreate()
+        ConfigManage.initConfig(this)
         Utils.init(this)
     }
 

@@ -1,13 +1,16 @@
 package com.aier.mykotlindemo.module.home
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.NavigationView
 import android.support.design.widget.Snackbar
+import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager
 import android.support.v4.widget.DrawerLayout
+import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import com.aier.mykotlindemo.GlideImageLoader
@@ -15,10 +18,11 @@ import com.aier.mykotlindemo.R
 import com.aier.mykotlindemo.base.BaseActivity
 import com.aier.mykotlindemo.config.GlobalConfig
 import com.aier.mykotlindemo.module.category.CategoryFragment
+import com.aier.mykotlindemo.module.navabout.NavAboutActivity
+import com.aier.mykotlindemo.module.navhome.NavHomeActivity
 import com.aier.mykotlindemo.module.picture.PictureActivity
-import com.aier.mykotlindemo.utils.AndroidWorkaround
-import com.aier.mykotlindemo.utils.ScreenUtil
-import com.aier.mykotlindemo.utils.StatusBarUtil
+import com.aier.mykotlindemo.module.web.WebViewActivity
+import com.aier.mykotlindemo.utils.*
 import com.kekstudio.dachshundtablayout.DachshundTabLayout
 import com.nanchen.aiyagirl.base.adapter.CommonViewPagerAdapter
 import com.youth.banner.Banner
@@ -26,6 +30,7 @@ import com.youth.banner.BannerConfig
 import com.youth.banner.listener.OnBannerListener
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.layout_main_nav.view.*
 
 class HomeActivity : BaseActivity(), HomeContract.IHomeView, OnBannerListener {
 
@@ -75,7 +80,7 @@ class HomeActivity : BaseActivity(), HomeContract.IHomeView, OnBannerListener {
         if (AndroidWorkaround.checkDeviceHasNavigationBar(this)) {
             AndroidWorkaround.assistActivity(findViewById(android.R.id.content))
         }
-
+        initDrawerLayout()
         mBanner.setIndicatorGravity(BannerConfig.RIGHT)
         mBanner.setOnBannerListener(this)
         val titles = GlobalConfig.TITLES
@@ -87,6 +92,52 @@ class HomeActivity : BaseActivity(), HomeContract.IHomeView, OnBannerListener {
         mViewPager.currentItem = 1
         mViewPager.offscreenPageLimit = 6
         mHomePresenter.subscribe()
+    }
+
+    private fun initDrawerLayout() {
+        mNavView.inflateHeaderView(R.layout.layout_main_nav)
+        val headerView = mNavView.getHeaderView(0)
+        headerView.ll_nav_homepage.setOnClickListener(mListener)
+        headerView.ll_nav_scan_address.setOnClickListener(mListener)
+        headerView.ll_nav_scan_address.setOnClickListener(mListener)
+        headerView.ll_nav_deedback.setOnClickListener(mListener)
+        headerView.ll_nav_login.setOnClickListener(mListener)
+        headerView.ll_nav_exit.setOnClickListener(mListener)
+        headerView.ll_nav_donation.setOnClickListener(mListener)
+    }
+
+    private val mListener = object : PerfectClickListener(){
+      override fun onNoDoubleClick(v:View) {
+          mDrawerLayout.closeDrawer(GravityCompat.START)
+          mDrawerLayout.postDelayed({
+                when (v.id){
+                    R.id.ll_nav_homepage->startActivity(Intent(this@HomeActivity, NavHomeActivity::class.java))
+                    R.id.ll_nav_scan_address // 关于我们
+                    -> startActivity(Intent(this@HomeActivity, NavAboutActivity::class.java))
+                    R.id.ll_nav_deedback // 问题反馈
+                    -> ToastyUtil.showSuccess("问题反馈")
+                    R.id.ll_nav_donation // 捐赠开发者
+                    ->
+                        // https://fama.alipay.com/qrcode/qrcodelist.htm?qrCodeType=P  二维码地址
+                        // http://cli.im/deqr/ 解析二维码
+                        // FKX04803CWX9HK0LPG7I81
+                        if (AlipayZeroSdk.hasInstalledAlipayClient(this@HomeActivity)) {
+                            AlipayZeroSdk.startAlipayClient(this@HomeActivity, "FKX04803CWX9HK0LPG7I81")
+                        } else {
+                            Snackbar.make(mToolbar, "谢谢，您没有安装支付宝客户端", Snackbar.LENGTH_LONG).show()
+                        }
+                    R.id.ll_nav_login // 登录github账号
+                    -> {
+                        val intent_login = Intent(this@HomeActivity, WebViewActivity::class.java)
+                        intent_login.putExtra(WebViewActivity.GANK_TITLE, "登录github")
+                        intent_login.putExtra(WebViewActivity.GANK_URL, "https://github.com/login")
+                        startActivity(intent_login)
+                    }
+                    R.id.ll_nav_exit -> finish()
+                    else -> { }
+                }
+          },260)
+      }
     }
 
     override fun OnBannerClick(position: Int) {

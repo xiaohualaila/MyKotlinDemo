@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <!-- 保存图片需要使用 -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
     <application
             android:name=".App"
             android:allowBackup="true"
@@ -22,6 +23,21 @@
 
         </activity>
         <activity android:name=".module.picture.PictureActivity"
+                  android:launchMode="singleTop"
+                  android:screenOrientation="portrait">
+
+        </activity>
+        <activity android:name=".module.navhome.NavHomeActivity"
+                  android:launchMode="singleTop"
+                  android:screenOrientation="portrait">
+
+        </activity>
+        <activity android:name=".module.navabout.NavAboutActivity"
+                  android:launchMode="singleTop"
+                  android:screenOrientation="portrait">
+
+        </activity>
+        <activity android:name=".module.web.WebViewActivity"
                   android:launchMode="singleTop"
                   android:screenOrientation="portrait">
 

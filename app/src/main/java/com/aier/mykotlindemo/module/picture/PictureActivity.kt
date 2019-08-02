@@ -10,6 +10,7 @@ import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.view.ViewCompat
 import android.support.v7.widget.Toolbar
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -131,6 +132,7 @@ class PictureActivity : BaseActivity(), PictureContract.PictureView {
 
     @OnClick(R.id.picture_btn_save)
     fun onClick() {
+        Log.i("sss","mImageUrl " + mImageUrl);
         mPresenter.saveGirl(mImageUrl, mBitmap!!, mImageTitle)
     }
 
